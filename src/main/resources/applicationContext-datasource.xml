@@ -9,7 +9,7 @@
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--<context:component-scan base-package="com.mmall" annotation-config="true"/>-->
 
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -22,6 +22,7 @@
         </property>
         <property name="fileEncoding" value="utf-8"/>
     </bean>
+
 
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -47,7 +48,7 @@
         <!-- 数据库连接过多长时间不用将被视为被遗弃而收回连接池中 -->
          <!--<property name="removeAbandonedTimeout" value="120" />-->
         <!-- #连接的超时时间，默认为半小时。 -->
-        <property name="minEvictableIdleTimeMillis" value="${db.minEvictableIdleTimeMillis}"/>
+        <!--<property name="minEvictableIdleTimeMillis" value="${db.minEvictableIdleTimeMillis}"/>-->
 
         <!--# 失效检查线程运行时间间隔，要小于MySQL默认-->
         <property name="timeBetweenEvictionRunsMillis" value="40000"/>
@@ -59,7 +60,7 @@
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="mapperLocations" value="classpath*:mappers/*Mapper.xml"></property>
+        <property name="mapperLocations" value="classpath*:mappers/*Mapper.xml"/>
 
         <!-- 分页插件 -->
         <property name="plugins">
