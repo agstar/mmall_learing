@@ -35,8 +35,13 @@ public interface OrderService {
 
     ServerResponse<PageInfo> manageSearch(Long orderNo, int pageNum, int pageSize);
     ServerResponse<String> manageSendGoods(Long orderNo);
-
-
+    /**
+     * 自动关闭hour小时的订单
+     *
+     * @author rcl
+     * @date 2018/7/31 22:30
+     */
+    void closeOrder(int hour);
 
 
 }

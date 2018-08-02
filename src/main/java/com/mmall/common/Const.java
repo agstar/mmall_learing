@@ -14,9 +14,16 @@ public class Const {
 
 
     public static final String CURRENT_USER = "currentUser";
-
+    public static final String TOKEN_PREFIX = "token_";
     public static final String EMAIL = "email";
     public static final String USERNAME = "username";
+
+    public interface RedisCacheExtime {
+        /**
+         * 30分钟
+         */
+        int REDIS_SESSION_EXTIME = 60 * 30;
+    }
 
     public interface ProductListOrderBy {
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
@@ -249,7 +256,14 @@ public class Const {
             }
             throw new RuntimeException("没有找到对应的枚举");
         }
+    }
 
+    public interface REDIS_LOCK{
+        /**
+         * 关闭订单的分布式锁
+         *
+         */
+        String CLOSE_ORDER_TASK_LOCK = "CLOSE_ORDER_TASK_LOCK";
     }
 
 }

@@ -1,4 +1,4 @@
-<!doctype html>
+<!Doctype html>
 <html lang="en">
 <head>
     <%@ page pageEncoding="UTF-8" %>
@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <body>
-SPringMVC上传文件
+SpringMVC上传文件1
 <form name="form1" action="/manage/product/upload.do" method="post" enctype="multipart/form-data">
     <input type="file" name="file"/>
     <input type="submit" value="springmvc上传文件">

@@ -1,7 +1,6 @@
 package com.mmall.controller.backend;
 
 import com.google.common.collect.Maps;
-import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
@@ -9,7 +8,10 @@ import com.mmall.pojo.User;
 import com.mmall.service.FileService;
 import com.mmall.service.ProductService;
 import com.mmall.service.UserService;
+import com.mmall.util.CookieUtil;
+import com.mmall.util.JsonUtil;
 import com.mmall.util.PropertiesUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 /**
@@ -48,8 +49,13 @@ public class ProductManageController {
      */
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse productSave(HttpSession session, Product product) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse productSave(HttpServletRequest request, Product product) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员账号");
         }
@@ -59,6 +65,7 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        //使用拦截器验证登录及权限
     }
 
     /**
@@ -69,8 +76,13 @@ public class ProductManageController {
      */
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse setSaleStatus(HttpSession session, Integer productId, Integer status) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse setSaleStatus(HttpServletRequest request, Integer productId, Integer status) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员账号");
         }
@@ -79,6 +91,7 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        //使用拦截器验证登录及权限
     }
 
     /**
@@ -89,8 +102,13 @@ public class ProductManageController {
      */
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse setDetail(HttpSession session, Integer productId) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse setDetail(HttpServletRequest request, Integer productId) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员账号");
         }
@@ -99,6 +117,7 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        //使用拦截器验证登录及权限
     }
 
     /**
@@ -109,9 +128,14 @@ public class ProductManageController {
      */
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse getList(HttpSession session, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+    public ServerResponse getList(HttpServletRequest request, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员账号");
         }
@@ -120,14 +144,20 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        //使用拦截器验证登录及权限
     }
 
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse searchProduct(HttpSession session, Integer productId, String productName,
+    public ServerResponse searchProduct(HttpServletRequest request, Integer productId, String productName,
                                         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员账号");
         }
@@ -136,6 +166,7 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+        //使用拦截器验证登录及权限
     }
 
     /**
@@ -146,8 +177,13 @@ public class ProductManageController {
      */
     @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse upload(HttpSession session, @RequestParam() MultipartFile file, HttpServletRequest request) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse upload(HttpServletRequest request, @RequestParam() MultipartFile file) {
+        /*String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员账号");
         }
@@ -161,7 +197,15 @@ public class ProductManageController {
             return ServerResponse.createBySuccess(map);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
-        }
+        }*/
+        //使用拦截器验证登录及权限
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String fileName = fileService.uplaod(file, path);
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + fileName;
+        Map<String, String> map = Maps.newHashMap();
+        map.put("uri", fileName);
+        map.put("url", url);
+        return ServerResponse.createBySuccess(map);
     }
 
     /**
@@ -172,10 +216,17 @@ public class ProductManageController {
      */
     @RequestMapping("richtxt_img_upload.do")
     @ResponseBody
-    public Map<String, Object> richtxtImgUpload(HttpSession session, MultipartFile file, HttpServletRequest request
+    public Map<String, Object> richtxtImgUpload(HttpServletRequest request, MultipartFile file
             , HttpServletResponse response) {
         Map<String, Object> map = Maps.newHashMap();
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        /*String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            map.put("success", false);
+            map.put("msg", "请登录管理员账号");
+            return map;
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user == null) {
             map.put("success", false);
             map.put("msg", "请登录管理员账号");
@@ -200,7 +251,22 @@ public class ProductManageController {
             map.put("success", false);
             map.put("msg", "无权限操作");
             return map;
+        }*/
+
+        //使用拦截器验证登录及权限
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String fileName = fileService.uplaod(file, path);
+        if (StringUtils.isBlank(fileName)) {
+            map.put("success", false);
+            map.put("msg", "上传失败");
+            return map;
         }
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + fileName;
+        map.put("success", true);
+        map.put("msg", "上传成功");
+        map.put("file_path", url);
+        response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
+        return map;
     }
 
 
